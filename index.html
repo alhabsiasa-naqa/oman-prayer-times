@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توقيت - أوقات الصلاة</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loader"></div>
+        <p>جاري تحميل أوقات الصلاة...</p>
+    </div>
+
+    <div id="black-screen" class="hidden"></div>
+
+    <div id="main-container" class="hidden">
+        <header>
+            <div class="logo-section">
+                <img id="logo" src="https://offline.tawkit.net/assets/logo.png" alt="Mosque Logo" onerror="this.style.display='none'">
+                <h1 id="mosque-name">المركز الإسلامي</h1>
+            </div>
+            <div class="date-section">
+                <div id="hijri-date"></div>
+                <div id="gregorian-date"></div>
+            </div>
+            <div class="weather-section" id="weather">
+                <span id="temperature">--°</span>
+                <span id="weather-icon">☀️</span>
+            </div>
+        </header>
+
+        <div class="clock-container">
+            <div id="clock" class="clock-full">00:00:00</div>
+        </div>
+
+        <div class="next-prayer-section">
+            <div id="next-prayer-label">الصلاة القادمة</div>
+            <div id="next-prayer-name">الفجر</div>
+            <div id="next-prayer-countdown">00:00:00</div>
+        </div>
+
+        <div class="prayer-times-container" id="prayer-times">
+            <div class="prayer-card" data-prayer="fajr">
+                <div class="prayer-name">الفجر</div>
+                <div class="prayer-time">--:--</div>
+            </div>
+            <div class="prayer-card" data-prayer="sunrise">
+                <div class="prayer-name">الشروق</div>
+                <div class="prayer-time">--:--</div>
+            </div>
+            <div class="prayer-card" data-prayer="dhuhr">
+                <div class="prayer-name">الظهر</div>
+                <div class="prayer-time">--:--</div>
+            </div>
+            <div class="prayer-card" data-prayer="asr">
+                <div class="prayer-name">العصر</div>
+                <div class="prayer-time">--:--</div>
+            </div>
+            <div class="prayer-card" data-prayer="maghrib">
+                <div class="prayer-name">المغرب</div>
+                <div class="prayer-time">--:--</div>
+            </div>
+            <div class="prayer-card" data-prayer="isha">
+                <div class="prayer-name">العشاء</div>
+                <div class="prayer-time">--:--</div>
+            </div>
+        </div>
+
+        <div class="tomorrow-fajr">
+            <span>فجر الغد: <span id="tomorrow-fajr-time">--:--</span></span>
+        </div>
+
+        <div class="ayat-section hidden" id="ayat-section">
+            <div id="ayat-text"></div>
+        </div>
+
+        <div class="bottom-section">
+            <div class="hadith-container" id="hadith-container">
+                <div class="hadith-text" id="hadith-text">
+                    <p>جاري تحميل الحديث...</p>
+                </div>
+            </div>
+            <div class="announcements-container hidden" id="announcements-container">
+                <div class="announcement-text" id="announcement-text">
+                    <marquee behavior="scroll" direction="right">مرحباً بكم في المركز الإسلامي</marquee>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="tawkit-branding">
+                <span id="tawkit-name">مدعوم بواسطة توقيت</span>
+                <span style="margin: 0 10px;">|</span>
+                <a href="admin.html" style="color: #ffd700; text-decoration: none;">⚙️ لوحة التحكم</a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="oman-locations.js"></script>
+    <script src="weather.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

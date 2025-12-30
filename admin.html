@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - أوقات الصلاة</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0a1929 0%, #1a2332 50%, #0a1929 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
+            color: #ffd700;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 1rem;
+            font-family: 'Cairo', sans-serif;
+            direction: rtl;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #ffd700;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .time-inputs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #0a1929;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 68, 68, 0.4);
+        }
+
+        .info-box {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-box p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #ffd700;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #ffd700;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+
+        .success-message {
+            background: rgba(0, 255, 0, 0.2);
+            border: 2px solid rgba(0, 255, 0, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .prayer-time-row {
+            display: grid;
+            grid-template-columns: 150px 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .prayer-offset-row {
+            display: grid;
+            grid-template-columns: 100px 120px 100px 120px;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .prayer-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .current-time {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffd700;
+            text-align: center;
+        }
+
+        .offset-input {
+            width: 100% !important;
+            padding: 8px !important;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .new-time {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #4ade80;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← العودة للصفحة الرئيسية</a>
+        
+        <h1>⚙️ لوحة التحكم</h1>
+
+        <!-- معلومات الحالة الحالية -->
+        <div class="card">
+            <h2>📊 الحالة الحالية</h2>
+            <div class="info-box">
+                <p><strong>المنطقة:</strong> <span id="current-location">جاري التحميل...</span></p>
+                <p><strong>صيغة الوقت:</strong> <span id="current-format">12 ساعة</span></p>
+                <p style="display: none;"><strong>فارق التوقيت:</strong> <span id="current-offset">0</span> دقيقة</p>
+            </div>
+        </div>
+
+        <!-- تعديل التاريخ الهجري -->
+        <div class="card">
+            <h2>📅 تعديل التاريخ الهجري</h2>
+            <p style="margin-bottom: 15px; opacity: 0.9;">
+                إذا كان التاريخ الهجري غير دقيق، يمكنك تعديله بإضافة أو طرح أيام
+            </p>
+
+            <div class="form-group">
+                <label>فارق الأيام</label>
+                <input type="number" id="hijri-offset" placeholder="0" value="0" min="-5" max="5">
+                <small style="opacity: 0.8; display: block; margin-top: 5px;">
+                    القيم الموجبة تضيف أيام (+1، +2)، القيم السالبة تطرح أيام (-1، -2)
+                </small>
+            </div>
+
+            <div class="info-box" style="margin-top: 15px;">
+                <p><strong>مثال:</strong></p>
+                <p>• إذا كان التاريخ الهجري متأخر يوم واحد، أدخل: <strong>+1</strong></p>
+                <p>• إذا كان التاريخ الهجري متقدم يوم واحد، أدخل: <strong>-1</strong></p>
+            </div>
+
+            <button class="btn btn-primary" onclick="applyHijriOffset()">
+                حفظ فارق التاريخ الهجري
+            </button>
+            <button class="btn btn-secondary" onclick="resetHijriOffset()">
+                إعادة تعيين (بدون فارق)
+            </button>
+            <div class="success-message" id="hijri-success">
+                ✅ تم حفظ فارق التاريخ الهجري بنجاح
+            </div>
+        </div>
+
+        <!-- تعديل أوقات الصلاة بالفارق -->
+        <div class="card">
+            <h2>🕌 تعديل أوقات الصلاة بالفارق</h2>
+            <p style="margin-bottom: 15px; opacity: 0.9;">
+                الوقت الحالي من API + الفارق بالدقائق = الوقت الجديد
+            </p>
+
+            <div style="display: grid; grid-template-columns: 100px 120px 100px 120px; gap: 10px; margin-bottom: 10px; font-weight: 700; opacity: 0.8; font-size: 0.9rem;">
+                <div>الصلاة</div>
+                <div>الوقت الحالي</div>
+                <div>الفارق (دقائق)</div>
+                <div>الوقت الجديد</div>
+            </div>
+
+            <div class="prayer-offset-row">
+                <div class="prayer-name">الفجر</div>
+                <div class="current-time" id="current-fajr">--:--</div>
+                <input type="number" class="offset-input" id="offset-fajr" placeholder="0" value="0" oninput="calculateNewTime('fajr')">
+                <div class="new-time" id="new-fajr">--:--</div>
+            </div>
+
+            <div class="prayer-offset-row">
+                <div class="prayer-name">الشروق</div>
+                <div class="current-time" id="current-sunrise">--:--</div>
+                <input type="number" class="offset-input" id="offset-sunrise" placeholder="0" value="0" oninput="calculateNewTime('sunrise')">
+                <div class="new-time" id="new-sunrise">--:--</div>
+            </div>
+
+            <div class="prayer-offset-row">
+                <div class="prayer-name">الظهر</div>
+                <div class="current-time" id="current-dhuhr">--:--</div>
+                <input type="number" class="offset-input" id="offset-dhuhr" placeholder="0" value="0" oninput="calculateNewTime('dhuhr')">
+                <div class="new-time" id="new-dhuhr">--:--</div>
+            </div>
+
+            <div class="prayer-offset-row">
+                <div class="prayer-name">العصر</div>
+                <div class="current-time" id="current-asr">--:--</div>
+                <input type="number" class="offset-input" id="offset-asr" placeholder="0" value="0" oninput="calculateNewTime('asr')">
+                <div class="new-time" id="new-asr">--:--</div>
+            </div>
+
+            <div class="prayer-offset-row">
+                <div class="prayer-name">المغرب</div>
+                <div class="current-time" id="current-maghrib">--:--</div>
+                <input type="number" class="offset-input" id="offset-maghrib" placeholder="0" value="0" oninput="calculateNewTime('maghrib')">
+                <div class="new-time" id="new-maghrib">--:--</div>
+            </div>
+
+            <div class="prayer-offset-row">
+                <div class="prayer-name">العشاء</div>
+                <div class="current-time" id="current-isha">--:--</div>
+                <input type="number" class="offset-input" id="offset-isha" placeholder="0" value="0" oninput="calculateNewTime('isha')">
+                <div class="new-time" id="new-isha">--:--</div>
+            </div>
+
+            <button class="btn btn-primary" onclick="applyIndividualOffsets()">
+                تطبيق الفوارق وحفظ الأوقات
+            </button>
+            <button class="btn btn-secondary" onclick="loadCurrentTimesFromAPI()">
+                تحديث الأوقات الحالية من API
+            </button>
+            <button class="btn btn-secondary" onclick="clearIndividualOffsets()">
+                مسح جميع الفوارق
+            </button>
+            <div class="success-message" id="manual-success">
+                ✅ تم حفظ الأوقات الجديدة بنجاح
+            </div>
+        </div>
+
+        <!-- الإعدادات العامة -->
+        <div class="card">
+            <h2>⚙️ الإعدادات العامة</h2>
+            
+            <div class="form-group">
+                <label>صيغة الوقت</label>
+                <select id="time-format" onchange="updateTimeFormat()">
+                    <option value="12">12 ساعة (ص/م)</option>
+                    <option value="24">24 ساعة</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>اسم المسجد/المنطقة</label>
+                <input type="text" id="mosque-name-input" placeholder="مثال: مسجد السلطان قابوس الأكبر">
+            </div>
+
+            <button class="btn btn-primary" onclick="saveGeneralSettings()">
+                حفظ الإعدادات
+            </button>
+            <div class="success-message" id="settings-success">
+                ✅ تم حفظ الإعدادات بنجاح
+            </div>
+        </div>
+
+        <!-- إعادة تعيين -->
+        <div class="card">
+            <h2>🔄 إعادة التعيين</h2>
+            <p style="margin-bottom: 15px; opacity: 0.9;">
+                إعادة جميع الإعدادات إلى القيم الافتراضية
+            </p>
+            <button class="btn btn-danger" onclick="resetAllSettings()">
+                إعادة تعيين جميع الإعدادات
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentPrayerTimes = {};
+
+        // تحميل الإعدادات الحالية
+        function loadCurrentSettings() {
+            const format = localStorage.getItem('use12HourFormat') === 'false' ? '24' : '12';
+            const mosqueName = localStorage.getItem('mosqueName') || '';
+            
+            document.getElementById('time-format').value = format;
+            document.getElementById('mosque-name-input').value = mosqueName;
+            
+            document.getElementById('current-offset').textContent = '0';
+            document.getElementById('current-format').textContent = format === '12' ? '12 ساعة' : '24 ساعة';
+            
+            // تحميل فارق التاريخ الهجري المحفوظ
+            loadSavedHijriOffset();
+            
+            // تحميل الأوقات الحالية من API
+            loadCurrentTimesFromAPI();
+            
+            // تحميل الفوارق المحفوظة
+            loadSavedOffsets();
+        }
+        
+        // تحميل فارق التاريخ الهجري المحفوظ
+        function loadSavedHijriOffset() {
+            const savedOffset = localStorage.getItem('hijriDateOffset');
+            if (savedOffset) {
+                document.getElementById('hijri-offset').value = savedOffset;
+            }
+        }
+        
+        // حفظ فارق التاريخ الهجري
+        function applyHijriOffset() {
+            const offset = parseInt(document.getElementById('hijri-offset').value) || 0;
+            localStorage.setItem('hijriDateOffset', offset.toString());
+            
+            alert('تم حفظ فارق التاريخ الهجري: ' + (offset > 0 ? '+' : '') + offset + ' يوم');
+            
+            window.location.href = 'index.html';
+        }
+        
+        // إعادة تعيين فارق التاريخ الهجري
+        function resetHijriOffset() {
+            document.getElementById('hijri-offset').value = 0;
+            localStorage.removeItem('hijriDateOffset');
+            
+            alert('تم إعادة تعيين فارق التاريخ الهجري');
+            
+            window.location.href = 'index.html';
+        }
+
+        // جلب الأوقات الحالية من API
+        async function loadCurrentTimesFromAPI() {
+            try {
+                // استخدام إحداثيات مسقط كافتراضي
+                const lat = 23.5880;
+                const lon = 58.3829;
+                const url = `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=4`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    const timings = data.data.timings;
+                    
+                    currentPrayerTimes = {
+                        fajr: timings.Fajr.substring(0, 5),
+                        sunrise: timings.Sunrise.substring(0, 5),
+                        dhuhr: timings.Dhuhr.substring(0, 5),
+                        asr: timings.Asr.substring(0, 5),
+                        maghrib: timings.Maghrib.substring(0, 5),
+                        isha: timings.Isha.substring(0, 5)
+                    };
+                    
+                    // عرض الأوقات الحالية
+                    document.getElementById('current-fajr').textContent = currentPrayerTimes.fajr;
+                    document.getElementById('current-sunrise').textContent = currentPrayerTimes.sunrise;
+                    document.getElementById('current-dhuhr').textContent = currentPrayerTimes.dhuhr;
+                    document.getElementById('current-asr').textContent = currentPrayerTimes.asr;
+                    document.getElementById('current-maghrib').textContent = currentPrayerTimes.maghrib;
+                    document.getElementById('current-isha').textContent = currentPrayerTimes.isha;
+                    
+                    // حساب الأوقات الجديدة
+                    ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'].forEach(prayer => {
+                        calculateNewTime(prayer);
+                    });
+                }
+            } catch (error) {
+                console.error('خطأ في جلب الأوقات:', error);
+                alert('فشل تحميل الأوقات من API. تحقق من الاتصال بالإنترنت.');
+            }
+        }
+
+        // حساب الوقت الجديد بناءً على الفارق
+        function calculateNewTime(prayer) {
+            const currentTime = currentPrayerTimes[prayer];
+            if (!currentTime) return;
+            
+            const offset = parseInt(document.getElementById(`offset-${prayer}`).value) || 0;
+            
+            const [hours, minutes] = currentTime.split(':').map(Number);
+            const totalMinutes = hours * 60 + minutes + offset;
+            const newHours = Math.floor((totalMinutes + 1440) / 60) % 24;
+            const newMinutes = (totalMinutes + 1440) % 60;
+            
+            const newTime = `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
+            document.getElementById(`new-${prayer}`).textContent = newTime;
+        }
+
+        // تحميل الفوارق المحفوظة
+        function loadSavedOffsets() {
+            const savedOffsets = localStorage.getItem('individualPrayerOffsets');
+            if (savedOffsets) {
+                const offsets = JSON.parse(savedOffsets);
+                Object.keys(offsets).forEach(prayer => {
+                    const input = document.getElementById(`offset-${prayer}`);
+                    if (input) {
+                        input.value = offsets[prayer];
+                        calculateNewTime(prayer);
+                    }
+                });
+            }
+        }
+
+        // تطبيق الفوارق الفردية وحفظ الأوقات
+        function applyIndividualOffsets() {
+            const offsets = {};
+            const newTimes = {};
+            
+            ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'].forEach(prayer => {
+                const offset = parseInt(document.getElementById(`offset-${prayer}`).value) || 0;
+                const newTime = document.getElementById(`new-${prayer}`).textContent;
+                
+                offsets[prayer] = offset;
+                newTimes[prayer] = newTime;
+            });
+            
+            // حفظ الفوارق
+            localStorage.setItem('individualPrayerOffsets', JSON.stringify(offsets));
+            
+            // حفظ الأوقات الجديدة كأوقات يدوية
+            const manualTimes = {
+                fajr: newTimes.fajr,
+                sunrise: newTimes.sunrise,
+                dhuhr: newTimes.dhuhr,
+                asr: newTimes.asr,
+                maghrib: newTimes.maghrib,
+                isha: newTimes.isha
+            };
+            
+            localStorage.setItem('manualPrayerTimes', JSON.stringify(manualTimes));
+            localStorage.setItem('useManualTimes', 'true');
+            
+            showSuccess('manual-success');
+        }
+
+        // مسح جميع الفوارق
+        function clearIndividualOffsets() {
+            ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'].forEach(prayer => {
+                document.getElementById(`offset-${prayer}`).value = '0';
+                calculateNewTime(prayer);
+            });
+            localStorage.removeItem('individualPrayerOffsets');
+            localStorage.removeItem('manualPrayerTimes');
+            localStorage.removeItem('useManualTimes');
+            alert('تم مسح جميع الفوارق. سيتم استخدام الأوقات التلقائية.');
+        }
+
+        // تحديث صيغة الوقت
+        function updateTimeFormat() {
+            const format = document.getElementById('time-format').value;
+            localStorage.setItem('use12HourFormat', format === '12' ? 'true' : 'false');
+            document.getElementById('current-format').textContent = format === '12' ? '12 ساعة' : '24 ساعة';
+        }
+
+        // حفظ الإعدادات العامة
+        function saveGeneralSettings() {
+            const mosqueName = document.getElementById('mosque-name-input').value;
+            if (mosqueName) {
+                localStorage.setItem('mosqueName', mosqueName);
+            }
+            showSuccess('settings-success');
+        }
+
+        // إعادة تعيين جميع الإعدادات
+        function resetAllSettings() {
+            if (confirm('هل أنت متأكد من إعادة تعيين جميع الإعدادات؟')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // إظهار رسالة النجاح
+        function showSuccess(elementId) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 3000);
+        }
+
+        // تحميل الإعدادات عند فتح الصفحة
+        window.addEventListener('DOMContentLoaded', loadCurrentSettings);
+    </script>
+</body>
+</html>

@@ -1,0 +1,379 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Cairo', 'Amiri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a1929 0%, #1a2332 50%, #0a1929 100%);
+    color: white;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+html[dir="rtl"] body {
+    direction: rtl;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0a1929 0%, #1a2332 50%, #0a1929 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loader {
+    border: 8px solid rgba(255, 255, 255, 0.3);
+    border-top: 8px solid white;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#loading-screen p {
+    margin-top: 20px;
+    font-size: 1.2rem;
+}
+
+#black-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    z-index: 9998;
+    cursor: pointer;
+}
+
+#main-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    max-width: 1920px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    margin-bottom: 30px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    flex-direction: row-reverse;
+}
+
+#logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+#mosque-name {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.date-section {
+    text-align: center;
+    font-size: 2.5rem;
+    line-height: 1.4;
+}
+
+#hijri-date {
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-size: 3rem;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
+#gregorian-date {
+    opacity: 0.95;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.weather-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    flex-direction: row-reverse;
+}
+
+.clock-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+#clock {
+    font-size: 6rem;
+    font-weight: 700;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 2px 2px 10px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: font-size 0.3s ease;
+    font-family: 'Digital-7', monospace;
+    letter-spacing: 5px;
+}
+
+#clock.clock-mini {
+    font-size: 3rem;
+}
+
+.next-prayer-section {
+    text-align: center;
+    margin: 30px 0;
+    padding: 40px;
+    background: rgba(255, 215, 0, 0.15);
+    border: 3px solid rgba(255, 215, 0, 0.3);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+}
+
+#next-prayer-label {
+    font-size: 2rem;
+    opacity: 0.95;
+    margin-bottom: 15px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+#next-prayer-name {
+    font-size: 5rem;
+    font-weight: 900;
+    margin-bottom: 20px;
+    cursor: pointer;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    color: #ffd700;
+}
+
+#next-prayer-countdown {
+    font-size: 5.5rem;
+    font-weight: 900;
+    color: #ffd700;
+    text-shadow: 0 0 25px rgba(255, 215, 0, 0.6), 2px 2px 15px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    letter-spacing: 8px;
+}
+
+.prayer-times-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+    flex: 1;
+}
+
+.prayer-times-container.five-prayers {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.prayer-times-container.five-prayers .prayer-card[data-prayer="sunrise"] {
+    display: none;
+}
+
+.prayer-card {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 25px 20px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.prayer-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.prayer-card.active {
+    background: rgba(255, 215, 0, 0.2);
+    border: 2px solid #ffd700;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.4), 0 8px 25px rgba(0, 0, 0, 0.3);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.4), 0 8px 25px rgba(0, 0, 0, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6), 0 8px 25px rgba(0, 0, 0, 0.3); }
+}
+
+.prayer-name {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    cursor: pointer;
+    letter-spacing: 1px;
+}
+
+.prayer-time {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    font-family: 'Digital-7', monospace;
+}
+
+.iqama-label {
+    font-size: 1rem;
+    opacity: 0.8;
+    margin-bottom: 5px;
+}
+
+.iqama-time {
+    font-size: 2rem;
+    font-weight: 700;
+    cursor: pointer;
+    color: #90caf9;
+    font-family: 'Digital-7', monospace;
+}
+
+.tomorrow-fajr {
+    text-align: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin: 10px 0;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+#tomorrow-fajr-time {
+    font-weight: 700;
+    color: #ffd700;
+}
+
+.ayat-section {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    margin: 10px 0;
+    font-size: 1.3rem;
+    font-style: italic;
+    line-height: 1.8;
+}
+
+.bottom-section {
+    margin: 20px 0;
+    min-height: 100px;
+}
+
+.hadith-container,
+.announcements-container {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+}
+
+.hadith-text,
+.announcement-text {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    text-align: center;
+}
+
+.hadith-text p {
+    margin: 10px 0;
+}
+
+footer {
+    text-align: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+#tawkit-name {
+    font-size: 1rem;
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+@media (max-width: 1200px) {
+    .prayer-times-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    #clock {
+        font-size: 4rem;
+    }
+    
+    #next-prayer-name {
+        font-size: 2rem;
+    }
+    
+    #next-prayer-countdown {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .prayer-times-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    #clock {
+        font-size: 3rem;
+    }
+    
+    #mosque-name {
+        font-size: 1.5rem;
+    }
+}
+
+marquee {
+    font-size: 1.2rem;
+}

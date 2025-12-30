@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار أوقات الإقامة</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            direction: rtl;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid #333;
+            border-radius: 8px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>اختبار أوقات الإقامة</h1>
+    
+    <div class="test-section">
+        <h2>1. حفظ أوقات الإقامة</h2>
+        <button onclick="saveTestIqama()">حفظ أوقات اختبار (15 دقيقة لكل الصلوات)</button>
+        <button onclick="saveDefaultIqama()">حفظ أوقات افتراضية (20/10)</button>
+        <div class="result" id="save-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. قراءة أوقات الإقامة</h2>
+        <button onclick="readIqama()">قراءة الأوقات المحفوظة</button>
+        <div class="result" id="read-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. مسح أوقات الإقامة</h2>
+        <button onclick="clearIqama()">مسح جميع الأوقات</button>
+        <div class="result" id="clear-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. عرض جميع localStorage</h2>
+        <button onclick="showAllStorage()">عرض جميع البيانات المحفوظة</button>
+        <div class="result" id="storage-result"></div>
+    </div>
+
+    <script>
+        function saveTestIqama() {
+            const testTimes = {
+                fajr: 15,
+                dhuhr: 15,
+                asr: 15,
+                maghrib: 15,
+                isha: 15
+            };
+            localStorage.setItem('customIqamaTimes', JSON.stringify(testTimes));
+            localStorage.setItem('iqamaTimesUpdated', Date.now().toString());
+            document.getElementById('save-result').innerHTML = 
+                '<strong>تم الحفظ!</strong><br>' + JSON.stringify(testTimes, null, 2);
+        }
+        
+        function saveDefaultIqama() {
+            const defaultTimes = {
+                fajr: 20,
+                dhuhr: 20,
+                asr: 20,
+                maghrib: 10,
+                isha: 20
+            };
+            localStorage.setItem('customIqamaTimes', JSON.stringify(defaultTimes));
+            localStorage.setItem('iqamaTimesUpdated', Date.now().toString());
+            document.getElementById('save-result').innerHTML = 
+                '<strong>تم الحفظ!</strong><br>' + JSON.stringify(defaultTimes, null, 2);
+        }
+        
+        function readIqama() {
+            const saved = localStorage.getItem('customIqamaTimes');
+            const updated = localStorage.getItem('iqamaTimesUpdated');
+            
+            if (saved) {
+                const times = JSON.parse(saved);
+                document.getElementById('read-result').innerHTML = 
+                    '<strong>الأوقات المحفوظة:</strong><br>' + 
+                    JSON.stringify(times, null, 2) + 
+                    '<br><br><strong>آخر تحديث:</strong> ' + 
+                    (updated ? new Date(parseInt(updated)).toLocaleString('ar-SA') : 'غير محدد');
+            } else {
+                document.getElementById('read-result').innerHTML = 
+                    '<strong>لا توجد أوقات محفوظة</strong>';
+            }
+        }
+        
+        function clearIqama() {
+            localStorage.removeItem('customIqamaTimes');
+            localStorage.removeItem('iqamaTimesUpdated');
+            document.getElementById('clear-result').innerHTML = 
+                '<strong>تم المسح!</strong>';
+        }
+        
+        function showAllStorage() {
+            let html = '<strong>جميع البيانات المحفوظة:</strong><br><br>';
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                html += `<strong>${key}:</strong> ${value}<br>`;
+            }
+            document.getElementById('storage-result').innerHTML = html;
+        }
+    </script>
+</body>
+</html>
