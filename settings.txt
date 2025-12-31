@@ -12,12 +12,12 @@ timeOffset=0
 
 # فوارق أوقات الصلاة الفردية (بالدقائق)
 # Individual Prayer Time Offsets (in minutes)
-fajrOffset=0
-sunriseOffset=1
-dhuhrOffset=1
-asrOffset=1
-maghribOffset=1
-ishaOffset=0
+fajrOffset=2
+sunriseOffset=0
+dhuhrOffset=6
+asrOffset=6
+maghribOffset=6
+ishaOffset=-10
 
 # اسم المسجد أو الموقع
 # Mosque or Location Name
@@ -28,4 +28,5 @@ mosqueName=
 # - الأرقام الموجبة تضيف وقت، السالبة تطرح
 # - مثال: hijriOffset=1 يضيف يوم واحد للتاريخ الهجري
 # - مثال: dhuhrOffset=-5 يطرح 5 دقائق من وقت الظهر
+
 
