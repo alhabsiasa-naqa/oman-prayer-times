@@ -14,19 +14,20 @@ timeOffset=0
 # Individual Prayer Time Offsets (in minutes)
 fajrOffset=2
 sunriseOffset=0
-dhuhrOffset=6
-asrOffset=6
-maghribOffset=6
+dhuhrOffset=5
+asrOffset=5
+maghribOffset=5
 ishaOffset=-10
 
 # اسم المسجد أو الموقع
 # Mosque or Location Name
-mosqueName=
+mosqueName=نقاء TV
 
 # ملاحظات:
 # - اترك القيمة فارغة لاستخدام الإعدادات الافتراضية
 # - الأرقام الموجبة تضيف وقت، السالبة تطرح
 # - مثال: hijriOffset=1 يضيف يوم واحد للتاريخ الهجري
 # - مثال: dhuhrOffset=-5 يطرح 5 دقائق من وقت الظهر
+
 
 
