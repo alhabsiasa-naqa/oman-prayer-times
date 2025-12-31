@@ -15,10 +15,76 @@ const CONFIG = {
     isInOman: false,
     use12HourFormat: true,
     timeOffset: 0,
-    useManualTimes: false
+    useManualTimes: false,
+    hijriOffset: 0,
+    individualOffsets: {
+        fajr: 0,
+        sunrise: 0,
+        dhuhr: 0,
+        asr: 0,
+        maghrib: 0,
+        isha: 0
+    }
 };
 
-// Load settings from localStorage
+// Load settings from GitHub settings.txt file
+async function loadSettingsFromGitHub() {
+    try {
+        // Try to fetch from GitHub Pages URL first
+        const response = await fetch('settings.txt');
+        if (!response.ok) {
+            console.log('settings.txt not found, using defaults');
+            return;
+        }
+        
+        const text = await response.text();
+        const lines = text.split('\n');
+        
+        lines.forEach(line => {
+            // Skip comments and empty lines
+            if (line.trim().startsWith('#') || !line.trim()) return;
+            
+            const [key, value] = line.split('=').map(s => s.trim());
+            if (!key || value === undefined) return;
+            
+            switch(key) {
+                case 'hijriOffset':
+                    if (value) CONFIG.hijriOffset = parseInt(value) || 0;
+                    break;
+                case 'timeOffset':
+                    if (value) CONFIG.timeOffset = parseInt(value) || 0;
+                    break;
+                case 'fajrOffset':
+                    if (value) CONFIG.individualOffsets.fajr = parseInt(value) || 0;
+                    break;
+                case 'sunriseOffset':
+                    if (value) CONFIG.individualOffsets.sunrise = parseInt(value) || 0;
+                    break;
+                case 'dhuhrOffset':
+                    if (value) CONFIG.individualOffsets.dhuhr = parseInt(value) || 0;
+                    break;
+                case 'asrOffset':
+                    if (value) CONFIG.individualOffsets.asr = parseInt(value) || 0;
+                    break;
+                case 'maghribOffset':
+                    if (value) CONFIG.individualOffsets.maghrib = parseInt(value) || 0;
+                    break;
+                case 'ishaOffset':
+                    if (value) CONFIG.individualOffsets.isha = parseInt(value) || 0;
+                    break;
+                case 'mosqueName':
+                    if (value) CONFIG.locationName = value;
+                    break;
+            }
+        });
+        
+        console.log('Settings loaded from GitHub:', CONFIG);
+    } catch (error) {
+        console.error('Error loading settings from GitHub:', error);
+    }
+}
+
+// Load settings from localStorage (fallback)
 function loadSettings() {
     const savedOffset = localStorage.getItem('timeOffset');
     if (savedOffset) {
@@ -33,6 +99,11 @@ function loadSettings() {
     const savedMosqueName = localStorage.getItem('mosqueName');
     if (savedMosqueName) {
         CONFIG.locationName = savedMosqueName;
+    }
+    
+    const savedHijriOffset = localStorage.getItem('hijriDateOffset');
+    if (savedHijriOffset) {
+        CONFIG.hijriOffset = parseInt(savedHijriOffset);
     }
     
     const useManual = localStorage.getItem('useManualTimes');
@@ -88,8 +159,13 @@ const PRAYER_NAMES_AR = {
     isha: 'العشاء'
 };
 
-function initializeApp() {
+async function initializeApp() {
+    // Load settings from GitHub first (priority)
+    await loadSettingsFromGitHub();
+    
+    // Then load localStorage settings (as fallback for settings not in GitHub file)
     loadSettings();
+    
     getLocation();
     updateClock();
     updateDates();
@@ -261,12 +337,12 @@ async function fetchPrayerTimes() {
             const timings = data.data.timings;
             
             // Store times in 24-hour format for calculations
-            prayerData.fajr.adhan = applyTimeOffset(formatTime(timings.Fajr));
-            prayerData.sunrise.adhan = applyTimeOffset(formatTime(timings.Sunrise));
-            prayerData.dhuhr.adhan = applyTimeOffset(formatTime(timings.Dhuhr));
-            prayerData.asr.adhan = applyTimeOffset(formatTime(timings.Asr));
-            prayerData.maghrib.adhan = applyTimeOffset(formatTime(timings.Maghrib));
-            prayerData.isha.adhan = applyTimeOffset(formatTime(timings.Isha));
+            prayerData.fajr.adhan = applyTimeOffset(formatTime(timings.Fajr), 'fajr');
+            prayerData.sunrise.adhan = applyTimeOffset(formatTime(timings.Sunrise), 'sunrise');
+            prayerData.dhuhr.adhan = applyTimeOffset(formatTime(timings.Dhuhr), 'dhuhr');
+            prayerData.asr.adhan = applyTimeOffset(formatTime(timings.Asr), 'asr');
+            prayerData.maghrib.adhan = applyTimeOffset(formatTime(timings.Maghrib), 'maghrib');
+            prayerData.isha.adhan = applyTimeOffset(formatTime(timings.Isha), 'isha');
             
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
@@ -315,11 +391,18 @@ function formatTime(time) {
 }
 
 // Apply time offset from admin panel
-function applyTimeOffset(time) {
-    if (CONFIG.timeOffset === 0) return time;
+function applyTimeOffset(time, prayerName = null) {
+    let offset = CONFIG.timeOffset;
+    
+    // If individual offset is set for this prayer, use it instead
+    if (prayerName && CONFIG.individualOffsets[prayerName] !== 0) {
+        offset = CONFIG.individualOffsets[prayerName];
+    }
+    
+    if (offset === 0) return time;
     
     const [hours, minutes] = time.split(':').map(Number);
-    const totalMinutes = hours * 60 + minutes + CONFIG.timeOffset;
+    const totalMinutes = hours * 60 + minutes + offset;
     const newHours = Math.floor((totalMinutes + 1440) / 60) % 24;
     const newMinutes = (totalMinutes + 1440) % 60;
     
@@ -400,10 +483,9 @@ function updateDates() {
     const gregorianOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('gregorian-date').textContent = now.toLocaleDateString('ar-SA', gregorianOptions);
     
-    // Apply Hijri date offset if set
-    const hijriOffset = parseInt(localStorage.getItem('hijriDateOffset')) || 0;
+    // Apply Hijri date offset if set (from GitHub settings or localStorage)
     const adjustedDate = new Date(now);
-    adjustedDate.setDate(adjustedDate.getDate() + hijriOffset);
+    adjustedDate.setDate(adjustedDate.getDate() + CONFIG.hijriOffset);
     
     const hijriDate = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
         day: 'numeric',
