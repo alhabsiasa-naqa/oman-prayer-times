@@ -4,7 +4,7 @@
 # فارق التاريخ الهجري (بالأيام)
 # Hijri Date Offset (in days)
 # القيم الموجبة تضيف أيام (+1، +2)، القيم السالبة تطرح أيام (-1، -2)
-hijriOffset=0
+hijriOffset=-1
 
 # فارق التوقيت العام (بالدقائق)
 # General Time Offset (in minutes)
@@ -13,10 +13,10 @@ timeOffset=0
 # فوارق أوقات الصلاة الفردية (بالدقائق)
 # Individual Prayer Time Offsets (in minutes)
 fajrOffset=0
-sunriseOffset=0
-dhuhrOffset=0
-asrOffset=0
-maghribOffset=0
+sunriseOffset=1
+dhuhrOffset=1
+asrOffset=1
+maghribOffset=1
 ishaOffset=0
 
 # اسم المسجد أو الموقع
@@ -28,3 +28,4 @@ mosqueName=
 # - الأرقام الموجبة تضيف وقت، السالبة تطرح
 # - مثال: hijriOffset=1 يضيف يوم واحد للتاريخ الهجري
 # - مثال: dhuhrOffset=-5 يطرح 5 دقائق من وقت الظهر
+
